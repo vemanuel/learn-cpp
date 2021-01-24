@@ -19,18 +19,30 @@ const map<int, string> end_pages {
 // The pages where Danny has a choice
 const vector<int> choice_page_nums {9, 13, 19, 27, 31, 39, 45, 53,};
 
+// The table of page jumps for Danny's choices
+const map<int, vector<int>> jump_table {
+    {9,  {20, 36}},
+    {13, {28, 46}},
+    {19, {32, 40}},
+    {27, {30, 10}},
+    {31, {70, 50}},
+    {39, {72, 14}},
+    {45, {54, 64}},
+    {53, {68, 60}},
+};
+
 // Load pages into memory once
 vector<string> pages = read_pages();
 
 // Load choices into memory once
-map<int, string> choices = read_choices();
+map<int, vector<string>> choices = read_choices();
 
 // ****************************************************************************
 // read a file into a string given the file name.
 string read_file(string fname)
 {
-    std::ifstream t(fname);
-    string str((char_iter(t)), char_iter());
+    std::ifstream fs(fname);
+    string str((char_iter(fs)), char_iter());
     return str;
 }
 
@@ -49,13 +61,18 @@ vector<string> read_pages()
 }
 
 // ****************************************************************************
-map<int, string> read_choices()
+map<int, vector<string>> read_choices()
 {
-    map<int, string> choices {};
+    map<int, vector<string>> choices {};
     for (int n : choice_page_nums)
     {
         string fname = str(format("choices/%03d.txt") % n);
-        choices[n] = read_file(fname);
+        string str = read_file(fname);
+        trim_right(str);
+        // Split str into lines separated by newlines
+        vector<string> lines;
+        split(lines, str, boost::is_any_of("\n"));
+        choices[n] = lines;
     }
     return choices;
 }
@@ -73,12 +90,13 @@ int get_next_page(int n)
         cout << ending;
         return 0;
     }
-    // TODO: Check if n is one of Danny's choices
+    // Check if n is one of Danny's choices
     else if (choices.count(n) > 0)
     {
         int m = get_choice(n);
-        cout << format("you chose %d\n") % m;
-        return 0;
+        // cout << format("you chose %d\n") % m;
+        const vector<int> nn = jump_table.at(n);
+        return nn[m-1];
     }
     // If we get here, return the next page
     else
@@ -90,11 +108,31 @@ int get_next_page(int n)
 // ****************************************************************************
 int get_choice(int n)
 {
-    string msg = choices[n];
+    vector<string> msgs = choices[n];    
     string response;
-    cout << msg;
+    int choice_count = msgs.size()-1;
+    // First line is always "What Should Danny Do?"
+    cout << format("%s\n") % msgs[0];
+    // Output the remaining choices with the number prepended
+    for (int i=1; i<= choice_count; ++i)
+    {
+        cout << format("(%d) %s\n") % i % msgs[i];
+    }
+    // Get the user's response and convert to an integer
     getline(cin, response);
-    return 0;
+    int choice=0;
+    try
+    {
+        choice = stoi(response);
+    }
+    catch (std::invalid_argument) {;}
+    // Keep trying until user gives a valid response
+    while (choice < 1 || choice > choice_count)
+    {
+        cout << format("Choice must be between 1 and %d.  Please try again.\n") % choice_count;
+        choice = get_choice(n);
+    }
+    return choice;
 }
 
 // ****************************************************************************
@@ -127,8 +165,6 @@ void test_read_pages()
 // ****************************************************************************
 int main()
 {
-    cout << "Welcome: Power to Choose.\n";
-    // test_read_pages();
     int n=1;
     do 
     {
@@ -136,6 +172,4 @@ int main()
         n = get_next_page(n);
     }
     while (n>0);
-
-
 }
