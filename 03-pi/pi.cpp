@@ -1,6 +1,5 @@
 #include "pi.h"
 
-
 // ****************************************************************************
 void report_results(estimate pi_est, string est_name)
 /*  Report the calculation of pi using the named method
@@ -30,13 +29,13 @@ estimate calc_pi_parrot()
 */
 {
     double pi_val = 3.141592654;
-    double pi_err = 1.0E-9;
+    double pi_err = 5.0E-10;
     estimate pi_est(pi_val, pi_err);
     return pi_est;
 }
 
 // ****************************************************************************
-estimate calc_pi_area(int n)
+estimate calc_pi_area(long n)
 /*  Estimate pi using the "area" method.
     This method takes the quarter circle in quadrant 1 and slices it into n rectangular slices.
     The width of each rectangle dx = 1/n.
@@ -52,8 +51,20 @@ estimate calc_pi_area(int n)
     pi_est: An estimate of pi, including a value and an error upper bound
 */
 {
-    double pi_val = 3.141592654;
-    double pi_err = 1.0E-8;
+    const double nd = n;
+    const double dx = 1.0/nd;
+    double q_lo=0.0, q_hi=0.0;
+    double y_prev = 1.0;
+    for (long i=1; i<=n; i++) 
+    {
+        double x = i/nd;
+        double y = sqrt(1.0-x*x);
+        q_lo += y*dx;
+        q_hi += y_prev*dx;
+        y_prev = y;
+    }
+    double pi_val = 2.0*(q_lo+q_hi);
+    double pi_err = 2.0*(q_hi-q_lo);
     estimate pi_est(pi_val, pi_err);
     return pi_est;
 }
@@ -69,7 +80,7 @@ int main()
     report_results(pi_parrot, "parrot");
 
     // Calculate pi using area method
-    int n_area = 16;
+    long n_area = pow(2L, 28L);
     estimate pi_area = calc_pi_area(n_area);
     string area_name = boost::str(format("area (n=%d)") % n_area);
     report_results(pi_area, area_name);
