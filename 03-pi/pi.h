@@ -25,5 +25,6 @@ struct estimate {
 void report_results(estimate pi_est, string est_name);
 estimate calc_pi_parrot();
 estimate calc_pi_area(long n);
+estimate calc_pi_archimedes(int k);
 // estimate calc_pi_midpoint(int n);
 int main();

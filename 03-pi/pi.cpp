@@ -70,6 +70,35 @@ estimate calc_pi_area(long n)
 }
 
 // ****************************************************************************
+estimate calc_pi_archimedes(int k)
+/*
+Calculate pi using method of Archimedes.
+a_n, b_n are the perimeters of an incsribed and circumscribed relgular n-gon
+(polygon of n equal sides), respectively.
+a_n < 2pi < bn
+provides lower and upper bounds for pi.
+A recursive formula is used to evaluate a_2n, b_2n given a_n, b_n.
+See https://mathworld.wolfram.com/ArchimedesRecurrenceFormula.html
+for an explanation of the Archimedes Recurrence Formula for the perimeters
+of a regular 2n-gon from a regular n-gon.
+*/
+{
+    // Initialize a, b for n=6 (hexagon)
+   double a = 6.0;
+   double b = 4.0*sqrt(3.0);
+
+   // Use Archimedes recurrence relation for k iterations
+   ;
+
+   // Esitimate 2pi = (a+b)/2
+    double pi_val = (a+b)/4.0;
+    double pi_err = (b-a)/4.0;
+    estimate pi_est(pi_val, pi_err);
+    return pi_est;
+ 
+}
+
+// ****************************************************************************
 int main()
 {
     // Report the official answer
@@ -84,6 +113,12 @@ int main()
     estimate pi_area = calc_pi_area(n_area);
     string area_name = boost::str(format("area (n=%d)") % n_area);
     report_results(pi_area, area_name);
+
+    // Calculate pi using Archimedes method
+    int k_arch = 10;
+    string arch_name = boost::str(format("Archimedes (k=%d)") % k_arch);
+    estimate pi_archimedes = calc_pi_archimedes(k_arch);
+    report_results(pi_archimedes, "Archimedes");
 
     // Exit program normally
     return 0;
