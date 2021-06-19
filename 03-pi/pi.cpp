@@ -88,7 +88,12 @@ of a regular 2n-gon from a regular n-gon.
    double b = 4.0*sqrt(3.0);
 
    // Use Archimedes recurrence relation for k iterations
-   ;
+   for (int i=0; i<k; i++)
+   {
+       // cout << format("a= %f, b=%f\n") % a % b;
+       b=2.0*a*b/(a+b);
+       a=sqrt(a*b);
+   }
 
    // Esitimate 2pi = (a+b)/2
     double pi_val = (a+b)/4.0;
@@ -115,10 +120,10 @@ int main()
     report_results(pi_area, area_name);
 
     // Calculate pi using Archimedes method
-    int k_arch = 10;
+    int k_arch = 24;
     string arch_name = boost::str(format("Archimedes (k=%d)") % k_arch);
     estimate pi_archimedes = calc_pi_archimedes(k_arch);
-    report_results(pi_archimedes, "Archimedes");
+    report_results(pi_archimedes, arch_name);
 
     // Exit program normally
     return 0;
