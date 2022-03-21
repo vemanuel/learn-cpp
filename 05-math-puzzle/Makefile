@@ -4,8 +4,8 @@
 CXX=g++
 CFLAGS=-std=c++20
 
-sieve: sieve.cpp
-	$(CXX) $(CFLAGS) sieve.cpp -o sieve.x -lfmt
+puzzle: puzzle.cpp
+	$(CXX) $(CFLAGS) puzzle.cpp -o puzzle.x -lfmt
 
 all: sieve
 

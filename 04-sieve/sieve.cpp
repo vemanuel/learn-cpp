@@ -90,7 +90,7 @@ int sieve_out(int p)
 
 // **************************************************************************************************
 void write_prime(int p)
-// Write one prime out to the file
+// Write one prime out to the file with a status update to the console.
 {
     std::string row = format("{:d}\n", p);
     cout << row;
@@ -99,9 +99,11 @@ void write_prime(int p)
 
 // **************************************************************************************************
 void write_big_primes(int n_max)
+// Write out the big primes (larger than n_max) to the file only.
 {
     print("Completed sieving process.  Writing out large primes...\n");
-    for (int n=n_max; n<is_comp.size(); ++n)
+    int p = get_next_prime(n_max);
+    for (int n=p+1; n<is_comp.size(); ++n)
     {
         if (!is_comp[n]) {fs << format("{:d}\n", n);}
     }
