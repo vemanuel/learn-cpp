@@ -2,7 +2,7 @@ CXX=g++
 CFLAGS=-std=c++20
 
 wordle: wordle.cpp utils Dict Engine
-	$(CXX) $(CFLAGS) wordle.cpp Dict.o Engine.o -o wordle.x -lfmt
+	$(CXX) $(CFLAGS) wordle.cpp Dict.o Engine.o utils.o -o wordle.x -lfmt
 
 utils: utils.cpp
 	$(CXX) $(CFLAGS) -c utils.cpp -o utils.o

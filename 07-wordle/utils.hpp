@@ -22,7 +22,7 @@ enum class Color : std::int8_t
 };
 
 // Convert an array of feedback on each letter in a guess to a single integer for performance
-int32_t scores2color(const Color* colors);
+int16_t colors2score(const Color* colors);
 
 // Convert a score to a vector of feedback colors
-vector<Color> scores2color(int32_t scores);
+vector<Color> score2colors(int16_t scores);
