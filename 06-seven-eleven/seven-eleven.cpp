@@ -13,7 +13,11 @@
 // in four unknowns:
 // (Eq. 1) x + y + z + w = 711
 // (Eq. 2) x * y * z * w = 7.11 x 10^8 = 711,000,000
-// These equations can be solved quickly on the computer
+// These equations can be solved quickly on the computer by guessing for x, y and z.
+// Once we've guessed for x, y, and z, we can solve for w using Eq. 1, then test if the result is consistent with Eq. 2.
+// If we reach an intermediate stage where the cumulative product of guesses we've already made
+// is no longer a factor of p, we can give up early and move on to the next guess.
+// We can further reduce the search time by assuming w.l.o.g. that x <= y <= z <= w.
 
 #include <iostream>
 #include <algorithm>
@@ -34,11 +38,10 @@ int main()
     int solution_count = 0;
 
     // Count the number of combinations tested
-    int combinations_tested;
+    int combinations_tested = 0;
 
     // Iterate over guesses for x
-    // int x_max = min(s, p);
-    int x_max = s;
+    int x_max = s/4;
     for (int x=1; x <= x_max; ++x)
     {
         // If x is not a factor of p, it's hopeless, so give up
@@ -46,7 +49,7 @@ int main()
             {continue;}
 
         // Iterate over guesses for y
-        int y_max = s-x;
+        int y_max = (s-x)/3;
         // Start the iteration from x because we can assume w.l.o.g. that x <= y <= z
         for (int y=x; y <= y_max; ++y)
         {
@@ -55,14 +58,15 @@ int main()
             if (p % (x*y) != 0)
                 {continue;}
 
-            // Iterate over guesses for z
-            int z_max = s-(x+y);
+            // Iterate over guesses for z; 
+            int z_max = (s-(x+y))/2;
             // Start the iteration from x because we can assume w.l.o.g. that x <= y <= z
             for (int z=y; z<= z_max; ++z)
             {
                 // Now that we've guessed x, y, and z we can solve for w using the sum condition
                 int w = s - (x+y+z);
                 ++combinations_tested;
+
                 // Check whether the product is correct AND it's sorted properly
                 int p4 = x*y*z*w;
                 if (p4 == p && z <= w)
@@ -83,10 +87,10 @@ int main()
                     // Increment the solution counter
                     ++solution_count;
                 }
-            }
+            }   // for / z
+        }   // for / y
+    }   // for / x
 
-        }
-    }
     // Report the results
     print("Explored {:d} possible combinations for s={:d}, p={:d}.\n", combinations_tested, s, p);
     print("Found a total of {:d} distinct solutions.\n", solution_count);
