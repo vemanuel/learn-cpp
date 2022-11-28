@@ -1,5 +1,6 @@
 CXX=g++
 CFLAGS=-std=c++20
+# CFLAGS=-std=c++20 -DDEBUG
 
 wordle: wordle.cpp utils Dict Engine
 	$(CXX) $(CFLAGS) wordle.cpp Dict.o Engine.o utils.o -o wordle.x -lfmt

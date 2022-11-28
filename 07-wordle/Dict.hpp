@@ -5,7 +5,6 @@
 #include <fstream>
 #include <algorithm>
 #include <fmt/format.h>
-
 #include "utils.hpp"
 
 using std::string, std::ifstream, fmt::print;
